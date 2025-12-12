@@ -25,7 +25,7 @@ class TerminalServer implements MessageComponentInterface
 
     protected LoopInterface $loop;
 
-    private function __construct(LoopInterface $loop, array $env = [])
+    public function __construct(LoopInterface $loop, array $env = [])
     {
         $this->env = $env;
 
@@ -44,15 +44,6 @@ class TerminalServer implements MessageComponentInterface
         } else {
             throw new Exception('Unsupported OS.');
         }
-    }
-
-    public static function make(LoopInterface $loop, array $env = []): WsServer
-    {
-        $wsServer = new WsServer(new static($loop, $env));
-
-        $wsServer->enableKeepAlive($loop);
-
-        return $wsServer;
     }
 
     public function onOpen(ConnectionInterface $conn): void

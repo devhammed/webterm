@@ -12,14 +12,6 @@ use UnexpectedValueException;
 
 class FrontendServer implements HttpServerInterface
 {
-    private function __construct()
-    {}
-
-    public static function make(): static
-    {
-        return new static();
-    }
-
     public function onOpen(ConnectionInterface $conn, ?RequestInterface $request = null): void
     {
         if ($request === null) {
