@@ -19,13 +19,13 @@ $app = new App(
 
 $app->routes->add('terminal', new Route(
     path: 'terminal',
-    defaults: ['_controller' => new TerminalServer($loop, $env)],
+    defaults: ['_controller' => TerminalServer::make($loop, $env)],
     methods: 'GET'
 ));
 
 $app->routes->add('frontend', new Route(
     path: '{frontend}',
-    defaults: ['_controller' => new FrontendServer()],
+    defaults: ['_controller' => FrontendServer::make()],
     requirements: ['frontend' => '.*'],
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 ));
