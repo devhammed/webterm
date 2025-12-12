@@ -82,8 +82,8 @@ class TerminalServer implements MessageComponentInterface
 
             $data = $output . $error;
 
-            if ($data === '') {
-                $conn->send( $data );
+            if ($data !== '') {
+                $conn->send($data);
             }
         });
 
