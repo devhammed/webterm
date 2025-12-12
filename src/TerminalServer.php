@@ -46,7 +46,7 @@ class TerminalServer implements MessageComponentInterface
         ];
 
         $process = proc_open(
-            ['script', '-q', '/dev/null', $this->env['SHELL'] ?? '/bin/bash'],
+            ['script', '-q', '/dev/null', '-c', $this->env['SHELL'] ?? '/bin/bash'],
             $descriptors,
             $pipes,
             $this->env['HOME'] ?? null,
