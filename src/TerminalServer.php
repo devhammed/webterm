@@ -42,9 +42,7 @@ class TerminalServer implements MessageComponentInterface
 
     public static function make(LoopInterface $loop, array $env = []): WsServer
     {
-        $terminalServer = new static($loop, $env);
-
-        $wsServer = new WsServer($terminalServer);
+        $wsServer = new WsServer(new static($loop, $env));
 
         $wsServer->enableKeepAlive($loop);
 
