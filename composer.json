@@ -1,0 +1,20 @@
+{
+  "name": "devhammed/webterm",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Devhammed\\Webterm\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Hammed Oyedele",
+      "email": "itz.harmid@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "cboden/ratchet": "^0.4.4"
+  }
+}
