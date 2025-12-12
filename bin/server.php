@@ -18,7 +18,7 @@ $app = new App(
 );
 
 $app->routes->add('terminal', new Route(
-    path: '/terminal',
+    path: 'terminal',
     defaults: ['_controller' => TerminalServer::make($loop, $env)],
     methods: 'GET'
 ));
