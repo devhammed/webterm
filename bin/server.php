@@ -20,7 +20,7 @@ $loop = Loop::get();
 
 $app = new App($host, $port, $address, $loop);
 
-$app->routes->add('ws', new Route(
+$app->routes->add('terminal', new Route(
     path: '/terminal',
     defaults: ['_controller' => TerminalServer::make($loop, $env)],
     methods: 'GET'
