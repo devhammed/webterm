@@ -21,7 +21,7 @@ class TerminalServer implements MessageComponentInterface
 
     protected LoopInterface $loop;
 
-    private function __construct(LoopInterface $loop, array $env)
+    private function __construct(LoopInterface $loop, array $env = [])
     {
         $this->env = $env;
 
