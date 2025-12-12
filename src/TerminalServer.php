@@ -7,6 +7,7 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\WebSocket\WsServer;
 use React\EventLoop\Loop;
+use React\EventLoop\LoopInterface;
 use SplObjectStorage;
 
 class TerminalServer implements MessageComponentInterface
@@ -23,10 +24,8 @@ class TerminalServer implements MessageComponentInterface
         $this->clients = new SplObjectStorage;
     }
 
-    public static function make(array $env = []): WsServer
+    public static function make(LoopInterface $loop, array $env = []): WsServer
     {
-        $loop = Loop::get();
-
         $terminalServer = new static($env);
 
         $wsServer = new WsServer($terminalServer);

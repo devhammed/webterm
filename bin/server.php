@@ -3,21 +3,26 @@
 use Devhammed\Webterm\FrontendServer;
 use Ratchet\App;
 use Devhammed\Webterm\TerminalServer;
+use React\EventLoop\Loop;
 use Symfony\Component\Routing\Route;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $env = getenv() ?: [];
 
-$host = $env['HOST'] ?? '127.0.0.1';
+$host = $env['HOST'] ?? 'localhost';
 
 $port = $env['PORT'] ?? 8080;
 
-$app = new App($host, $port);
+$address = $env['ADDR'] ?? '127.0.0.1';
+
+$loop = Loop::get();
+
+$app = new App($host, $port, $address, $loop);
 
 $app->routes->add('ws', new Route(
     path: '/terminal',
-    defaults: ['_controller' => TerminalServer::make($env)],
+    defaults: ['_controller' => TerminalServer::make($loop, $env)],
     methods: 'GET'
 ));
 
