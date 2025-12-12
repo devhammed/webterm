@@ -41,17 +41,13 @@
         };
 
         ws.onerror = (e) => {
-            alert(`Error connecting to terminal: ${e}.`);
-
-            if (confirm('Reload page?')) {
+            if (confirm(`Error connecting to terminal: ${e}, reload page?`)) {
                 window.location.reload();
             }
         };
 
         ws.onclose = (e) => {
-            alert(`Terminal connection closed: ${e.reason}.`);
-
-           if (confirm('Reload page?')) {
+           if (confirm(`Terminal connection closed: ${e.reason}, reload page?`)) {
                window.location.reload();
            }
         };
