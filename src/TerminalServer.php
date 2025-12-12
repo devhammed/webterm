@@ -17,22 +17,36 @@ class TerminalServer implements MessageComponentInterface
 
     protected array $env;
 
-    private function __construct(array $env)
+    protected array $command;
+
+    protected LoopInterface $loop;
+
+    private function __construct(LoopInterface $loop, array $env)
     {
         $this->env = $env;
 
+        $this->loop = $loop;
+
         $this->clients = new SplObjectStorage;
+
+        $shell = $this->env['SHELL'] ?? '/bin/bash';
+
+        if (PHP_OS_FAMILY === 'Linux') {
+            $this->command = ['script', '-q', '/dev/null', '-c', $shell];
+        } elseif (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'BSD' || PHP_OS_FAMILY === 'Solaris') {
+            $this->command = ['script', '-q', '/dev/null', $shell];
+        } else {
+            throw new Exception('Unsupported OS.');
+        }
     }
 
     public static function make(LoopInterface $loop, array $env = []): WsServer
     {
-        $terminalServer = new static($env);
+        $terminalServer = new static($loop, $env);
 
         $wsServer = new WsServer($terminalServer);
 
         $wsServer->enableKeepAlive($loop);
-
-        $loop->addPeriodicTimer(0.01, [$terminalServer, 'tick']);
 
         return $wsServer;
     }
@@ -46,7 +60,7 @@ class TerminalServer implements MessageComponentInterface
         ];
 
         $process = proc_open(
-            ['script', '-q', '/dev/null', '-c', $this->env['SHELL'] ?? '/bin/bash'],
+            $this->command,
             $descriptors,
             $pipes,
             $this->env['HOME'] ?? null,
@@ -63,9 +77,22 @@ class TerminalServer implements MessageComponentInterface
             stream_set_blocking($pipe, false);
         }
 
+        $timer = $this->loop->addPeriodicTimer(0.000001, function () use ($conn, $process, $pipes) {
+            $output = stream_get_contents($pipes[1]);
+
+            $error = stream_get_contents($pipes[2]);
+
+            $data = $output . $error;
+
+            if ($data === '') {
+                $conn->send( $data );
+            }
+        });
+
         $this->clients->attach($conn, new TerminalContext(
             $process,
             $pipes,
+            $timer,
         ));
     }
 
@@ -88,6 +115,8 @@ class TerminalServer implements MessageComponentInterface
 
         $context = $this->clients[$conn];
 
+        $this->loop->cancelTimer($context->timer);
+
         foreach ($context->pipes as $pipe) {
             fclose($pipe);
         }
@@ -102,22 +131,5 @@ class TerminalServer implements MessageComponentInterface
         $this->onClose($conn);
 
         $conn->close();
-    }
-
-    public function tick(): void
-    {
-        foreach ($this->clients as $conn) {
-            $context = $this->clients[$conn];
-
-            $output = stream_get_contents($context->pipes[1]);
-
-            $error = stream_get_contents($context->pipes[2]);
-
-            $data = $output . $error;
-
-            if ($data !== '') {
-                $conn->send($data);
-           }
-        }
     }
 }
