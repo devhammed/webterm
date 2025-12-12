@@ -19,6 +19,10 @@ class TerminalServer implements MessageComponentInterface
 
     protected array $command;
 
+    protected string $shell;
+
+    protected string $home;
+
     protected LoopInterface $loop;
 
     private function __construct(LoopInterface $loop, array $env = [])
@@ -29,12 +33,14 @@ class TerminalServer implements MessageComponentInterface
 
         $this->clients = new SplObjectStorage;
 
-        $shell = $this->env['SHELL'] ?? '/bin/bash';
+        $this->home = $this->env['HOME'] ?? '/';
+
+        $this->shell = $this->env['SHELL'] ?? '/bin/bash';
 
         if (PHP_OS_FAMILY === 'Linux') {
-            $this->command = ['script', '-q', '/dev/null', '-c', $shell];
+            $this->command = ['script', '-q', '/dev/null', '-c', $this->shell];
         } elseif (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'BSD' || PHP_OS_FAMILY === 'Solaris') {
-            $this->command = ['script', '-q', '/dev/null', $shell];
+            $this->command = ['script', '-q', '/dev/null', $this->shell];
         } else {
             throw new Exception('Unsupported OS.');
         }
@@ -57,13 +63,7 @@ class TerminalServer implements MessageComponentInterface
             2 => ['pipe', 'w'],
         ];
 
-        $process = proc_open(
-            $this->command,
-            $descriptors,
-            $pipes,
-            $this->env['HOME'] ?? null,
-            $this->env ?? [],
-        );
+        $process = proc_open($this->command, $descriptors, $pipes, $this->home, $this->env);
 
         if ( ! is_resource($process)) {
             $conn->close();
