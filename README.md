@@ -19,3 +19,5 @@ composer install
 
 php bin/server.php
 ```
+
+Then, you can access the terminal at `http://localhost:8080`.
