@@ -10,15 +10,12 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $env = getenv() ?: [];
 
-$host = $env['HOST'] ?? 'localhost';
-
-$port = $env['PORT'] ?? 8080;
-
-$address = $env['ADDR'] ?? '127.0.0.1';
-
-$loop = Loop::get();
-
-$app = new App($host, $port, $address, $loop);
+$app = new App(
+    $host = $env['HOST'] ?? 'localhost',
+    $port = $env['PORT'] ?? 8080,
+    $addr = $env['ADDR'] ?? '127.0.0.1',
+    $loop = Loop::get(),
+);
 
 $app->routes->add('terminal', new Route(
     path: '/terminal',
