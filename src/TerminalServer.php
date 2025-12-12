@@ -75,7 +75,7 @@ class TerminalServer implements MessageComponentInterface
             stream_set_blocking($pipe, false);
         }
 
-        $timer = $this->loop->addPeriodicTimer(0.000001, function () use ($conn, $process, $pipes) {
+        $timer = $this->loop->addPeriodicTimer(0.000001, function () use ($conn, $pipes) {
             $output = stream_get_contents($pipes[1]);
 
             $error = stream_get_contents($pipes[2]);
