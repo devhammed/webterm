@@ -27,7 +27,7 @@ $app->routes->add('frontend', new Route(
     path: '{frontend}',
     defaults: ['_controller' => FrontendServer::make()],
     requirements: ['frontend' => '.*'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 ));
 
 echo "Server started.\nHTTP: http://{$host}:{$port}\nTerminal: ws://{$host}:{$port}/terminal\n";
