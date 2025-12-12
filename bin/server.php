@@ -30,6 +30,6 @@ $app->routes->add('frontend', new Route(
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 ));
 
-echo "Server started.\nHTTP: http://{$host}:{$port}\nTerminal: ws://{$host}:{$port}/terminal\n";
+echo "Server started.\nFrontend: http://{$host}:{$port}\nTerminal: ws://{$host}:{$port}/terminal\n";
 
 $app->run();
